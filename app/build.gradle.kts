@@ -78,16 +78,16 @@ dependencies {
     // Herramientas de desarrollo para la previsualización
     debugImplementation("androidx.compose.ui:ui-tooling")       // Previsualización de la UI en tiempo de ejecución
     implementation("androidx.compose.ui:ui-tooling-preview")    // Previsualización de UI en el editor
-
+    implementation("androidx.compose.ui:ui:1.5.1")
     // Bibliotecas para carruseles y controles de UI adicionales
     implementation("androidx.compose.foundation:foundation:1.5.1")  // Fundamentos de la UI en Compose
-    implementation("androidx.compose.material:material:1.5.1")       // Material Design en Compose
+         // Material Design en Compose
     implementation("androidx.compose.material3:material3:1.0.1")     // Material Design 3
 
     // Soporte para carrusel de imágenes con `accompanist`
     implementation("com.google.accompanist:accompanist-pager:0.30.0")               // Biblioteca para carruseles (actualizado)
     implementation("com.google.accompanist:accompanist-pager-indicators:0.30.0")   // Indicadores de páginas en carrusel
-
+    implementation("androidx.compose.runtime:runtime:1.5.1")
     // Dependencias de prueba
     testImplementation(libs.junit)                              // Pruebas unitarias
     androidTestImplementation(libs.androidx.junit)              // Pruebas de UI con JUnit para Android
@@ -96,3 +96,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)     // Pruebas de UI en Compose con JUnit
     debugImplementation(libs.androidx.ui.test.manifest)         // Pruebas de UI en modo debug
 }
+

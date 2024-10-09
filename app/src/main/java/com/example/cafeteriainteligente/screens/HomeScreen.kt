@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -14,11 +14,12 @@ import com.example.cafeteriainteligente.components.CategoriesSection
 import com.example.cafeteriainteligente.components.RecentViewedSection
 import com.example.cafeteriainteligente.models.Product
 import androidx.navigation.NavController
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    cartProducts: List<Product>,  // Asegúrate de agregar este parámetro
+    cartProducts: List<Product>,
     onAddToCart: (Product) -> Unit
 ) {
     val images = listOf(
@@ -29,36 +30,55 @@ fun HomeScreen(
         R.drawable.menu5
     )
 
+    // Usar SnackbarHostState en lugar de ScaffoldState
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
     val scrollState = rememberScrollState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        ImageCarousel(
-            images = images,
+    // Estructura del Scaffold para mostrar mensajes flotantes
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) } // Asignar el snackbarHostState
+    ) { paddingValues ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        )
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(paddingValues)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            ImageCarousel(
+                images = images,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        CategoriesSection()
+            CategoriesSection()
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        RecentViewedSection(
-            cartProducts = cartProducts,  // Pasar la lista de productos en el carrito
-            onAddToCart = { product ->
-                onAddToCart(product)  // Llamar a la función de agregar al carrito correctamente
-            }
-        )
+            RecentViewedSection(
+                cartProducts = cartProducts,
+                onAddToCart = { product ->
+                    val alreadyInCart = cartProducts.any { it.id == product.id }
+                    if (alreadyInCart) {
+                        // Mostrar el mensaje flotante cuando el producto ya está en el carrito
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Ya se agregó este producto a tu carrito")
+                        }
+                    } else {
+                        onAddToCart(product)
+                    }
+                }
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
+

@@ -68,6 +68,7 @@ fun RecentViewedSection(
         }
     }
 }
+
 @Composable
 fun ProductCard(product: Product, onAddToCart: (Product) -> Unit, alreadyInCart: Boolean) {
     Card(
@@ -125,6 +126,7 @@ fun ProductCard(product: Product, onAddToCart: (Product) -> Unit, alreadyInCart:
         }
     }
 }
+
 
 
 
