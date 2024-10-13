@@ -41,9 +41,17 @@ fun AppNavigation(
         composable(route = "carrito") {
             CarritoScreenOnly(
                 products = cartProducts,  // Pasar lista de productos al carrito
-                onBackPressed = { navController.popBackStack() }
+                onBackPressed = { navController.popBackStack() },
+                onRemoveProduct = { product ->
+                    // Aquí puedes eliminar el producto del carrito
+                    // Por ejemplo, podrías llamar a onUpdateCart con una lógica para eliminar
+                },
+                onSaveProduct = { product ->
+                    // Aquí puedes guardar el producto para más tarde (implementación futura)
+                }
             )
         }
+
     }
 }
 

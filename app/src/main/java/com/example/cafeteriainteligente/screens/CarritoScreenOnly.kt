@@ -21,13 +21,14 @@ import com.example.cafeteriainteligente.models.Product
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CarritoScreenOnly(
-    products: List<Product>,  // Recibir lista de productos acumulados desde CarritoActivity
-    onBackPressed: () -> Unit  // Definir el parámetro `onBackPressed`
+    products: List<Product>,
+    onBackPressed: () -> Unit,
+    onRemoveProduct: (Product) -> Unit,  // Añadimos la función para eliminar productos
+    onSaveProduct: (Product) -> Unit     // Añadimos la función para guardar productos (vacío por ahora)
 ) {
-    // Crear un estado para manejar la cantidad de cada producto
     val quantities = remember { mutableStateMapOf<Product, Int>().apply {
-        products.forEach { product -> this[product] = 1 }  // Inicializar cada producto con cantidad 1
-    } }
+        products.forEach { product -> this[product] = 1 }
+    }}
 
     Scaffold(
         topBar = {
@@ -48,13 +49,10 @@ fun CarritoScreenOnly(
             ) {
                 Text(
                     text = "Tu carrito",
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
                     modifier = Modifier.padding(16.dp)
                 )
 
-                // Verificar si la lista de productos está vacía
                 if (products.isEmpty()) {
                     Text(
                         text = "Tu carrito está vacío.",
@@ -63,7 +61,7 @@ fun CarritoScreenOnly(
                     )
                 } else {
                     LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                        items(products) { product ->  // Mostrar productos con cantidad ajustable
+                        items(products) { product ->
                             val quantity = quantities[product] ?: 1
                             Row(
                                 modifier = Modifier
@@ -93,9 +91,19 @@ fun CarritoScreenOnly(
                                         text = "S/ ${product.price}",
                                         style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray)
                                     )
+
+                                    // Aquí agregamos los enlaces para "Eliminar" y "Guardar"
+                                    Row {
+                                        TextButton(onClick = { onRemoveProduct(product) }) {
+                                            Text("Eliminar", color = Color.Red)
+                                        }
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        TextButton(onClick = { onSaveProduct(product) }) {
+                                            Text("Guardar")
+                                        }
+                                    }
                                 }
 
-                                // Sección de botones de incremento y decremento
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
@@ -114,7 +122,7 @@ fun CarritoScreenOnly(
                                     )
                                     IconButton(
                                         onClick = {
-                                            if (quantity < 5) {  // Limitar el número máximo de unidades a 5
+                                            if (quantity < 5) {
                                                 quantities[product] = quantity + 1
                                             }
                                         }
@@ -140,6 +148,7 @@ fun CarritoScreenOnly(
         }
     )
 }
+
 
 
 
