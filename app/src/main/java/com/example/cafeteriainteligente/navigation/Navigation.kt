@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.cafeteriainteligente.models.CarritoViewModel
 import com.example.cafeteriainteligente.models.Product
 import com.example.cafeteriainteligente.screens.*
 
@@ -11,21 +12,28 @@ import com.example.cafeteriainteligente.screens.*
 fun AppNavigation(
     navController: NavHostController,
     cartProducts: List<Product>,  // Este parámetro se debe pasar correctamente
-    onUpdateCart: (Product) -> Unit
+    onUpdateCart: (Product) -> Unit,  // Función para actualizar el carrito (añadir/eliminar)
+    carritoViewModel: CarritoViewModel  // Pasar el ViewModel del carrito
 ) {
     NavHost(navController = navController, startDestination = "home") {
         composable(route = "home") {
             HomeScreen(
                 navController = navController,
-                cartProducts = cartProducts,  // Asegúrate de pasar `cartProducts` aquí
+                cartProducts = cartProducts,  // Asegúrate de pasar cartProducts aquí
                 onAddToCart = { product ->
-                    val alreadyInCart = cartProducts.any { it.id == product.id }
+                    val alreadyInCart = carritoViewModel.estaEnCarrito(product)
                     if (alreadyInCart) {
                         println("Ya se agregó este producto a tu carrito")
                     } else {
                         onUpdateCart(product)  // Solo agregar el producto sin redirigir
+                        carritoViewModel.agregarProducto(product)  // También agregar al ViewModel
                     }
-                }
+                },
+                onRemoveFromCart = { product ->  // Se agrega la función onRemoveFromCart
+                    carritoViewModel.eliminarProducto(product)  // Eliminar del ViewModel
+                    onUpdateCart(product)  // También manejar la eliminación en la lista global
+                },
+                carritoViewModel = carritoViewModel  // Pasar el ViewModel a HomeScreen
             )
         }
 
@@ -43,17 +51,20 @@ fun AppNavigation(
                 products = cartProducts,  // Pasar lista de productos al carrito
                 onBackPressed = { navController.popBackStack() },
                 onRemoveProduct = { product ->
-                    // Aquí puedes eliminar el producto del carrito
-                    // Por ejemplo, podrías llamar a onUpdateCart con una lógica para eliminar
+                    carritoViewModel.eliminarProducto(product)  // Eliminar del ViewModel
+                    onUpdateCart(product)  // También manejar la eliminación en la lista global
                 },
                 onSaveProduct = { product ->
                     // Aquí puedes guardar el producto para más tarde (implementación futura)
-                }
+                },
+                carritoViewModel = carritoViewModel  // Pasar el ViewModel a CarritoScreenOnly
             )
         }
-
     }
 }
+
+
+
 
 
 

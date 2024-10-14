@@ -4,7 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,8 +18,9 @@ import com.example.cafeteriainteligente.models.Product
 
 @Composable
 fun RecentViewedSection(
-    cartProducts: List<Product>,  // Agregar parámetro de productos en el carrito
-    onAddToCart: (Product) -> Unit
+    cartProducts: List<Product>,
+    onAddToCart: (Product) -> Unit,
+    onRemoveFromCart: (Product) -> Unit // Callback para remover productos
 ) {
     val products = listOf(
         Product(id = "1", imageRes = R.drawable.cafe, name = "Café Expreso", price = "5.00"),
@@ -41,27 +42,34 @@ fun RecentViewedSection(
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        // Ajuste para centrar las filas de productos en el ancho disponible
         products.chunked(2).forEach { rowItems ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = if (rowItems.size < 2) 32.dp else 0.dp), // Centralizar si hay menos de 2 productos
+                    .padding(horizontal = if (rowItems.size < 2) 32.dp else 0.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 rowItems.forEach { product ->
                     Box(modifier = Modifier.weight(1f)) {
-                        val alreadyInCart = cartProducts.any { it.id == product.id }  // Verificar si el producto ya está en el carrito
+                        var alreadyInCart by remember { mutableStateOf(cartProducts.any { it.id == product.id }) }
+
                         ProductCard(
                             product,
-                            onAddToCart,
-                            alreadyInCart  // Pasar estado si ya está en el carrito
+                            onAddToCart = {
+                                onAddToCart(it)
+                                alreadyInCart = true
+                            },
+                            onRemoveFromCart = {
+                                onRemoveFromCart(it)
+                                alreadyInCart = false
+                            },
+                            alreadyInCart = alreadyInCart
                         )
                     }
                 }
                 if (rowItems.size < 2) {
-                    Spacer(modifier = Modifier.weight(1f)) // Relleno para centrar
+                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))
@@ -70,18 +78,23 @@ fun RecentViewedSection(
 }
 
 @Composable
-fun ProductCard(product: Product, onAddToCart: (Product) -> Unit, alreadyInCart: Boolean) {
+fun ProductCard(
+    product: Product,
+    onAddToCart: (Product) -> Unit,
+    onRemoveFromCart: (Product) -> Unit,
+    alreadyInCart: Boolean
+) {
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = Modifier
-            .size(width = 160.dp, height = 200.dp) // Ajustar tamaño del card
+            .size(width = 160.dp, height = 200.dp)
             .padding(4.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(8.dp), // Ajustar padding dentro del card
+                .padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -107,26 +120,25 @@ fun ProductCard(product: Product, onAddToCart: (Product) -> Unit, alreadyInCart:
                 color = Color.Gray,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
-            // Ajuste de botón para aumentar el tamaño
+
+            // Botón para agregar o quitar del carrito
             Button(
                 onClick = {
                     if (alreadyInCart) {
-                        println("Ya se agregó este producto a tu carrito")
+                        onRemoveFromCart(product)
                     } else {
                         onAddToCart(product)
                     }
                 },
-                colors = ButtonDefaults.buttonColors(containerColor = if (alreadyInCart) Color.Gray else Color(0xFF4CAF50)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(38.dp) // Tamaño del botón ajustado
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (alreadyInCart) Color.Gray else Color(0xFF4CAF50)
+                )
             ) {
-                Text(if (alreadyInCart) "Ya en carrito" else "Pedir ya", fontSize = 14.sp, color = Color.White) // Ajuste de texto del botón
+                Text(text = if (alreadyInCart) "Ya en carrito" else "Pedir ya", color = Color.White)
             }
         }
     }
 }
-
 
 
 

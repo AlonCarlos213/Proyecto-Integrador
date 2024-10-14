@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -17,9 +16,9 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.example.cafeteriainteligente.CarritoActivity
-import com.example.cafeteriainteligente.models.Product
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.cafeteriainteligente.models.CarritoViewModel
 import androidx.compose.foundation.layout.Box
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,11 +28,14 @@ fun MainScreen(navController: NavHostController) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    // Lista de productos del carrito usando rememberSaveable para mantener el estado
-    var cartProducts by rememberSaveable { mutableStateOf(listOf<Product>()) }
+    // Obtener el ViewModel del carrito
+    val carritoViewModel: CarritoViewModel = viewModel()
+
+    // Obtener los productos del carrito desde el ViewModel
+    val cartProducts by remember { derivedStateOf { carritoViewModel.productosEnCarrito } }
 
     // Corregir el uso de `derivedStateOf` con `remember`
-    val productCount by remember { derivedStateOf { cartProducts.size } }
+    val productCount by remember { derivedStateOf { carritoViewModel.productosEnCarrito.size } }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -112,16 +114,15 @@ fun MainScreen(navController: NavHostController) {
                         navController = navController,
                         cartProducts = cartProducts,
                         onUpdateCart = { newProduct ->
-                            cartProducts = cartProducts + newProduct
-                        }
+                            carritoViewModel.agregarProducto(newProduct)
+                        },
+                        carritoViewModel = carritoViewModel  // Pasar el ViewModel al AppNavigation
                     )
                 }
             }
         )
     }
 }
-
-
 
 
 

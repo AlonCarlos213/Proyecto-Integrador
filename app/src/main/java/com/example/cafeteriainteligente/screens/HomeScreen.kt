@@ -14,13 +14,16 @@ import com.example.cafeteriainteligente.components.CategoriesSection
 import com.example.cafeteriainteligente.components.RecentViewedSection
 import com.example.cafeteriainteligente.models.Product
 import androidx.navigation.NavController
+import com.example.cafeteriainteligente.models.CarritoViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     cartProducts: List<Product>,
-    onAddToCart: (Product) -> Unit
+    onAddToCart: (Product) -> Unit,
+    onRemoveFromCart: (Product) -> Unit, // Agregar función para remover del carrito
+    carritoViewModel: CarritoViewModel
 ) {
     val images = listOf(
         R.drawable.menu1,
@@ -74,6 +77,9 @@ fun HomeScreen(
                     } else {
                         onAddToCart(product)
                     }
+                },
+                onRemoveFromCart = { product -> // Definir el comportamiento de eliminación
+                    onRemoveFromCart(product)
                 }
             )
 

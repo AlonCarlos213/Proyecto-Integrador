@@ -17,18 +17,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
 import com.example.cafeteriainteligente.models.Product
+import com.example.cafeteriainteligente.models.CarritoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CarritoScreenOnly(
     products: List<Product>,
     onBackPressed: () -> Unit,
-    onRemoveProduct: (Product) -> Unit,  // Añadimos la función para eliminar productos
-    onSaveProduct: (Product) -> Unit     // Añadimos la función para guardar productos (vacío por ahora)
+    onRemoveProduct: (Product) -> Unit,
+    onSaveProduct: (Product) -> Unit,
+    carritoViewModel: CarritoViewModel
 ) {
+    // Estado mutable para las cantidades por cada producto
     val quantities = remember { mutableStateMapOf<Product, Int>().apply {
         products.forEach { product -> this[product] = 1 }
     }}
+
+    // Estado mutable para actualizar los productos después de eliminar
+    var updatedProducts by remember { mutableStateOf(products) }
 
     Scaffold(
         topBar = {
@@ -53,15 +59,17 @@ fun CarritoScreenOnly(
                     modifier = Modifier.padding(16.dp)
                 )
 
-                if (products.isEmpty()) {
+                if (updatedProducts.isEmpty()) {
                     Text(
                         text = "Tu carrito está vacío.",
                         style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray),
-                        modifier = Modifier.padding(16.dp).align(Alignment.CenterHorizontally)
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.CenterHorizontally)
                     )
                 } else {
                     LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                        items(products) { product ->
+                        items(updatedProducts) { product ->
                             val quantity = quantities[product] ?: 1
                             Row(
                                 modifier = Modifier
@@ -92,9 +100,12 @@ fun CarritoScreenOnly(
                                         style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray)
                                     )
 
-                                    // Aquí agregamos los enlaces para "Eliminar" y "Guardar"
                                     Row {
-                                        TextButton(onClick = { onRemoveProduct(product) }) {
+                                        TextButton(onClick = {
+                                            onRemoveProduct(product) // Callback para actualizar la UI principal
+                                            carritoViewModel.eliminarProducto(product) // Eliminar del ViewModel
+                                            updatedProducts = updatedProducts.filter { it.id != product.id } // Actualizar UI
+                                        }) {
                                             Text("Eliminar", color = Color.Red)
                                         }
                                         Spacer(modifier = Modifier.width(8.dp))
@@ -104,6 +115,7 @@ fun CarritoScreenOnly(
                                     }
                                 }
 
+                                // Controles para aumentar/disminuir cantidad
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
@@ -148,6 +160,11 @@ fun CarritoScreenOnly(
         }
     )
 }
+
+
+
+
+
 
 
 
