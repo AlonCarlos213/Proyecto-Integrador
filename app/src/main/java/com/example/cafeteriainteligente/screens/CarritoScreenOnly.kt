@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
@@ -16,8 +16,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 import com.example.cafeteriainteligente.models.Product
 import com.example.cafeteriainteligente.models.CarritoViewModel
+import android.content.Intent
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import com.example.cafeteriainteligente.PaymentActivity
+import androidx.compose.ui.platform.LocalContext
+import com.google.gson.Gson
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,14 +33,14 @@ fun CarritoScreenOnly(
     onBackPressed: () -> Unit,
     onRemoveProduct: (Product) -> Unit,
     onSaveProduct: (Product) -> Unit,
-    carritoViewModel: CarritoViewModel
+    carritoViewModel: CarritoViewModel,
+    navController: NavController
 ) {
-    // Estado mutable para las cantidades por cada producto
+    val context = LocalContext.current
+    val gson = Gson()  // Inicializamos Gson
     val quantities = remember { mutableStateMapOf<Product, Int>().apply {
         products.forEach { product -> this[product] = 1 }
     }}
-
-    // Estado mutable para actualizar los productos después de eliminar
     var updatedProducts by remember { mutableStateOf(products) }
 
     Scaffold(
@@ -42,7 +49,7 @@ fun CarritoScreenOnly(
                 title = { Text(text = "Carrito de Compras") },
                 navigationIcon = {
                     IconButton(onClick = { onBackPressed() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Regresar")
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Regresar")
                     }
                 }
             )
@@ -99,12 +106,11 @@ fun CarritoScreenOnly(
                                         text = "S/ ${product.price}",
                                         style = MaterialTheme.typography.bodyLarge.copy(color = Color.Gray)
                                     )
-
                                     Row {
                                         TextButton(onClick = {
-                                            onRemoveProduct(product) // Callback para actualizar la UI principal
-                                            carritoViewModel.eliminarProducto(product) // Eliminar del ViewModel
-                                            updatedProducts = updatedProducts.filter { it.id != product.id } // Actualizar UI
+                                            onRemoveProduct(product)
+                                            carritoViewModel.eliminarProducto(product)
+                                            updatedProducts = updatedProducts.filter { it.id != product.id }
                                         }) {
                                             Text("Eliminar", color = Color.Red)
                                         }
@@ -114,8 +120,6 @@ fun CarritoScreenOnly(
                                         }
                                     }
                                 }
-
-                                // Controles para aumentar/disminuir cantidad
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
@@ -147,9 +151,13 @@ fun CarritoScreenOnly(
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-
                     Button(
-                        onClick = { /* Acción de compra */ },
+                        onClick = {
+                            val productsJson = gson.toJson(updatedProducts)
+                            val intent = Intent(context, PaymentActivity::class.java)
+                            intent.putExtra("selectedProducts", productsJson)
+                            context.startActivity(intent)
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     ) {
@@ -160,6 +168,9 @@ fun CarritoScreenOnly(
         }
     )
 }
+
+
+
 
 
 

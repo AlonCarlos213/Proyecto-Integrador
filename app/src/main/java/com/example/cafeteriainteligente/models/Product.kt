@@ -8,5 +8,6 @@ data class Product(
     val id: String,  // Identificador único
     val imageRes: Int,
     val name: String,
-    val price: String
+    val price: Double,  // Cambia el tipo a Double o Float
+    val points: Int,
 ) : Parcelable

@@ -15,14 +15,16 @@ import com.example.cafeteriainteligente.components.SearchBar
 import kotlinx.coroutines.launch
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import com.example.cafeteriainteligente.CarritoActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cafeteriainteligente.models.CarritoViewModel
 import androidx.compose.foundation.layout.Box
+import androidx.navigation.compose.rememberNavController
+import com.example.cafeteriainteligente.CarritoActivity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavHostController) {
+    val navController = rememberNavController()
     val searchText = remember { mutableStateOf("") }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val coroutineScope = rememberCoroutineScope()
@@ -30,6 +32,7 @@ fun MainScreen(navController: NavHostController) {
 
     // Obtener el ViewModel del carrito
     val carritoViewModel: CarritoViewModel = viewModel()
+
 
     // Obtener los productos del carrito desde el ViewModel
     val cartProducts by remember { derivedStateOf { carritoViewModel.productosEnCarrito } }
@@ -78,7 +81,6 @@ fun MainScreen(navController: NavHostController) {
                         }
                     },
                     actions = {
-                        // Reemplazar el Box con BadgedBox para mostrar el contador de productos
                         BadgedBox(
                             badge = {
                                 if (productCount > 0) {
@@ -116,13 +118,14 @@ fun MainScreen(navController: NavHostController) {
                         onUpdateCart = { newProduct ->
                             carritoViewModel.agregarProducto(newProduct)
                         },
-                        carritoViewModel = carritoViewModel  // Pasar el ViewModel al AppNavigation
+                        carritoViewModel = carritoViewModel
                     )
                 }
             }
         )
     }
 }
+
 
 
 

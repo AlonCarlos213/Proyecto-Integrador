@@ -23,12 +23,11 @@ fun RecentViewedSection(
     onRemoveFromCart: (Product) -> Unit // Callback para remover productos
 ) {
     val products = listOf(
-        Product(id = "1", imageRes = R.drawable.cafe, name = "Café Expreso", price = "5.00"),
-        Product(id = "2", imageRes = R.drawable.bebidas, name = "Jugo de Naranja", price = "3.50"),
-        Product(id = "3", imageRes = R.drawable.postres, name = "Torta de Fresa", price = "8.00"),
-        Product(id = "4", imageRes = R.drawable.sandwich, name = "Sandwich de Pollo", price = "6.50")
+        Product(id = "1", imageRes = R.drawable.cafe, name = "Café Expreso", price = 5.00, points = 10),
+        Product(id = "2", imageRes = R.drawable.bebidas, name = "Jugo de Naranja", price = 3.50, points = 5),
+        Product(id = "3", imageRes = R.drawable.postres, name = "Torta de Fresa", price = 8.00, points = 20),
+        Product(id = "4", imageRes = R.drawable.sandwich, name = "Sandwich de Pollo", price = 6.50, points = 15)
     )
-
     Column(
         modifier = Modifier
             .fillMaxWidth()

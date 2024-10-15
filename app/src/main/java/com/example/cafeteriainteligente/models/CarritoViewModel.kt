@@ -29,5 +29,19 @@ class CarritoViewModel : ViewModel() {
     fun estaEnCarrito(product: Product): Boolean {
         return productosEnCarrito.contains(product)
     }
-}
 
+    // Función para obtener el total a pagar por todos los productos
+    fun getTotalAmount(): Double {
+        return productosEnCarrito.sumOf { it.price.toDouble() }
+    }
+
+    // Función para calcular los puntos ganados por la compra
+    fun getPointsEarned(): Int {
+        // Supongamos que se ganan 10 puntos por cada sol gastado
+        val pointsPerSol = 10
+        return (getTotalAmount() * pointsPerSol).toInt()
+    }
+    fun clearCart() {
+        productosEnCarrito.clear()
+    }
+}
