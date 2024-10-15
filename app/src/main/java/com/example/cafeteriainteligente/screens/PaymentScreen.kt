@@ -42,7 +42,7 @@ fun PaymentScreen(
                 title = { Text("Realizar Pago") },
                 navigationIcon = {
                     IconButton(onClick = {
-                        // La flecha solo debe navegar hacia la pantalla de carrito, sin borrar el carrito
+                        // La flecha simplemente redirige a la pantalla del carrito
                         navController.navigate("carrito") {
                             popUpTo("carrito") { inclusive = true }
                         }
@@ -114,12 +114,11 @@ fun PaymentScreen(
                 // Botón rojo para "Cancelar compra"
                 Button(
                     onClick = {
-                        // Aquí sí limpiamos el carrito al cancelar la compra
-                        carritoViewModel.clearCart()
-                        println("Carrito limpiado, navegando a home")  // Log para verificar
+                        carritoViewModel.clearCart()  // Limpiar el carrito
+                        println("Carrito limpiado, navegando a home")  // Log para ver si se ejecuta esta línea
                         try {
                             navController.navigate("home") {
-                                popUpTo("home") { inclusive = true }  // Navegar al menú principal
+                                popUpTo("home") { inclusive = true }  // Volver a la pantalla principal
                             }
                         } catch (e: Exception) {
                             println("Error al cancelar la compra: ${e.message}")
@@ -129,18 +128,8 @@ fun PaymentScreen(
                 ) {
                     Text("Cancelar compra")
                 }
+
             }
         }
     )
 }
-
-
-
-
-
-
-
-
-
-
-
