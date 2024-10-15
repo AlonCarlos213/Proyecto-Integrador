@@ -1,5 +1,6 @@
 package com.example.cafeteriainteligente.screens
 
+import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.cafeteriainteligente.PurchaseSummaryActivity
 import com.example.cafeteriainteligente.models.CarritoViewModel
 import com.example.cafeteriainteligente.models.Product
 
@@ -24,7 +26,7 @@ fun PaymentScreen(
     onPaymentSuccess: () -> Unit
 ) {
     var termsAccepted by remember { mutableStateOf(false) }
-    var showDialog by remember { mutableStateOf(false) } // Controlar si se muestra el cuadro de diálogo
+    var showDialog by remember { mutableStateOf(false) }
     val buttonColor = if (termsAccepted) Color(0xFF4CAF50) else Color.Gray
     val totalAmount = if (selectedProducts.isNotEmpty()) {
         selectedProducts.sumOf { it.price }
@@ -92,13 +94,13 @@ fun PaymentScreen(
                 Button(
                     onClick = {
                         if (termsAccepted && selectedProducts.isNotEmpty()) {
-                            // Verificar si la lista de productos no está vacía antes de proceder
-                            try {
-                                onPaymentSuccess()
-                                navController.navigate("purchase_summary/$totalAmount/$pointsEarned")
-                            } catch (e: Exception) {
-                                println("Error durante la navegación: ${e.message}")
-                            }
+                            // Aquí generamos el Intent para pasar los productos, el total y los puntos ganados
+                            val context = navController.context // Obtén el contexto
+                            val intent = Intent(context, PurchaseSummaryActivity::class.java)
+                            intent.putExtra("totalAmount", totalAmount) // Pasar el totalAmount
+                            intent.putExtra("pointsEarned", pointsEarned) // Pasar los puntos ganados
+                            intent.putParcelableArrayListExtra("purchasedProducts", ArrayList(selectedProducts)) // Pasar productos comprados como ArrayList
+                            context.startActivity(intent) // Navegar a la pantalla de resumen de compra
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = buttonColor),
@@ -107,13 +109,14 @@ fun PaymentScreen(
                     Text("Realizar Compra")
                 }
 
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Cuadro de diálogo para confirmar la cancelación
                 if (showDialog) {
                     AlertDialog(
                         onDismissRequest = {
-                            showDialog = false // Cerrar el diálogo cuando se toca fuera de él
+                            showDialog = false
                         },
                         title = { Text(text = "Cancelar compra") },
                         text = { Text(text = "¿Estás seguro que quieres cancelar tu compra?") },
@@ -124,7 +127,7 @@ fun PaymentScreen(
                                     navController.navigate("carrito") {
                                         popUpTo("carrito") { inclusive = true }
                                     }
-                                    showDialog = false // Cerrar el cuadro de diálogo
+                                    showDialog = false
                                 },
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                             ) {
@@ -133,9 +136,7 @@ fun PaymentScreen(
                         },
                         dismissButton = {
                             Button(
-                                onClick = {
-                                    showDialog = false // Cerrar el cuadro de diálogo sin hacer nada
-                                },
+                                onClick = { showDialog = false },
                                 colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                             ) {
                                 Text("Cancelar", color = Color.Black)
@@ -147,3 +148,4 @@ fun PaymentScreen(
         }
     )
 }
+

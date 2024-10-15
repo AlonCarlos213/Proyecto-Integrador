@@ -13,6 +13,16 @@
         android:theme="@style/Theme.CafeteriaInteligente"
         tools:targetApi="31">
         <activity
+            android:name=".ReservarComidaActivity"
+            android:exported="false"
+            android:label="@string/title_activity_reservar_comida"
+            android:theme="@style/Theme.CafeteriaInteligente" />
+        <activity
+            android:name=".SuggestionActivity"
+            android:exported="false"
+            android:label="@string/title_activity_suggestion"
+            android:theme="@style/Theme.CafeteriaInteligente" />
+        <activity
             android:name=".PurchaseSummaryActivity"
             android:exported="false"
             android:label="@string/title_activity_purchase_summary"

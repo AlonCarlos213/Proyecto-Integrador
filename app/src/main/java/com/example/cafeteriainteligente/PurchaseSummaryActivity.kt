@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cafeteriainteligente.models.CarritoViewModel
 import com.example.cafeteriainteligente.screens.PurchaseSummaryScreen
 import androidx.navigation.compose.rememberNavController
+import com.example.cafeteriainteligente.models.Product
 
 class PurchaseSummaryActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,20 +16,21 @@ class PurchaseSummaryActivity : ComponentActivity() {
         // Obtener los valores pasados por la Intent
         val totalAmount = intent.getDoubleExtra("totalAmount", 0.0)
         val pointsEarned = intent.getIntExtra("pointsEarned", 0)
+        val purchasedProducts = intent.getParcelableArrayListExtra<Product>("purchasedProducts") ?: emptyList()
 
         setContent {
-            // Crear navController por si lo necesitas para futuras navegaciones
             val navController = rememberNavController()
+            val carritoViewModel: CarritoViewModel = viewModel() // Obtener el ViewModel correctamente
 
-            // Obtener el ViewModel del carrito
-            val carritoViewModel: CarritoViewModel = viewModel()
-
-            // Llamada al Composable de la pantalla del resumen de compra
+            // Llamar a la pantalla de resumen de compra pasando el ViewModel
             PurchaseSummaryScreen(
-                navController = navController,  // Pasar el NavController
-                totalAmount = totalAmount,      // Pasar el totalAmount
-                pointsEarned = pointsEarned     // Pasar los pointsEarned
+                navController = navController,
+                totalAmount = totalAmount,
+                pointsEarned = pointsEarned,
+                purchasedProducts = purchasedProducts,
+                carritoViewModel = carritoViewModel  // Pasar el carritoViewModel aquí
             )
         }
     }
 }
+

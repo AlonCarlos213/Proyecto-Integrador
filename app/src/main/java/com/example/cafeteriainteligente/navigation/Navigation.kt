@@ -2,12 +2,15 @@ package com.example.cafeteriainteligente.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.cafeteriainteligente.models.CarritoViewModel
 import com.example.cafeteriainteligente.models.Product
 import com.example.cafeteriainteligente.screens.*
 import com.google.gson.Gson
+
 
 @Composable
 fun AppNavigation(
@@ -22,10 +25,7 @@ fun AppNavigation(
                 navController = navController,
                 cartProducts = cartProducts,
                 onAddToCart = { product ->
-                    val alreadyInCart = carritoViewModel.estaEnCarrito(product)
-                    if (alreadyInCart) {
-                        println("Ya se agregó este producto a tu carrito")
-                    } else {
+                    if (!carritoViewModel.estaEnCarrito(product)) {
                         onUpdateCart(product)
                         carritoViewModel.agregarProducto(product)
                     }
@@ -47,24 +47,13 @@ fun AppNavigation(
         composable(route = "carrito") {
             CarritoScreenOnly(
                 products = carritoViewModel.productosEnCarrito,
-                onBackPressed = { navController.popBackStack() },
+                onBackPressed = { navController.popBackStack() },  // Sin advertencia aquí
                 onRemoveProduct = { product -> carritoViewModel.eliminarProducto(product) },
                 onSaveProduct = { product -> /* Lógica de guardar */ },
                 carritoViewModel = carritoViewModel,
-                navController = navController  // Pasando el NavController correctamente
+                navController = navController
             )
         }
-        composable(route = "carrito") {
-            CarritoScreenOnly(
-                products = carritoViewModel.productosEnCarrito, // Pasar los productos del carrito directamente
-                onBackPressed = { navController.popBackStack() }, // Navegar de regreso a la pantalla anterior
-                onRemoveProduct = { product -> carritoViewModel.eliminarProducto(product) }, // Función para eliminar productos
-                onSaveProduct = { product -> /* Aquí la lógica para guardar el producto si la tienes */ },
-                carritoViewModel = carritoViewModel, // Pasar el ViewModel correctamente
-                navController = navController // Pasar el controlador de navegación correctamente
-            )
-        }
-
         composable(route = "payment") {
             PaymentScreen(
                 navController = navController,
@@ -75,15 +64,42 @@ fun AppNavigation(
                 }
             )
         }
-        composable(route = "purchase_summary/{totalAmount}/{pointsEarned}") { backStackEntry ->
+        composable(
+            route = "purchase_summary/{totalAmount}/{pointsEarned}/{purchasedProducts}",
+            arguments = listOf(
+                navArgument("totalAmount") { type = NavType.StringType },
+                navArgument("pointsEarned") { type = NavType.StringType },
+                navArgument("purchasedProducts") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
             val totalAmount = backStackEntry.arguments?.getString("totalAmount")?.toDouble() ?: 0.0
             val pointsEarned = backStackEntry.arguments?.getString("pointsEarned")?.toInt() ?: 0
+            val purchasedProductsJson =
+                backStackEntry.arguments?.getString("purchasedProducts") ?: "[]"
+
+            val gson = Gson()
+            val purchasedProducts: List<Product> =
+                gson.fromJson(purchasedProductsJson, Array<Product>::class.java).toList()
+
+            // Pasar carritoViewModel y otros parámetros
             PurchaseSummaryScreen(
                 navController = navController,
                 totalAmount = totalAmount,
-                pointsEarned = pointsEarned
+                pointsEarned = pointsEarned,
+                purchasedProducts = purchasedProducts,
+                carritoViewModel = carritoViewModel // Asegúrate de pasar este parámetro
             )
         }
+
+        // Nueva ruta para la pantalla de Reservar comida
+        composable(route = "reservar_comida") {
+            ReservarComidaScreen(
+                onNavigateToHome = {
+                    navController.navigate("home") // Vuelve a la pantalla de inicio cuando se complete la acción
+                }
+            )
+        }
+
     }
 }
 

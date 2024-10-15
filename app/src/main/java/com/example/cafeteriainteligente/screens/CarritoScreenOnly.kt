@@ -53,7 +53,7 @@ fun CarritoScreenOnly(
                     IconButton(onClick = {
                         // Solo mostrar el diálogo si ya está en proceso de compra (presionó "Comprar ahora")
                         if (inCheckoutProcess) {
-                            showExitDialog = true
+                            showExitDialog = true // Activa el diálogo
                         } else {
                             onBackPressed() // No mostrar advertencia, simplemente navegar
                         }
@@ -167,6 +167,7 @@ fun CarritoScreenOnly(
                             intent.putExtra("selectedProducts", productsJson)
                             context.startActivity(intent)
                             inCheckoutProcess = true // Marcar que ha comenzado el proceso de compra
+                            showExitDialog = false // Reiniciar el estado del diálogo
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -183,13 +184,13 @@ fun CarritoScreenOnly(
         AlertDialog(
             onDismissRequest = { showExitDialog = false },  // Cierra el diálogo si se hace clic fuera
             title = { Text(text = "Cancelar compra") },
-            text = { Text("¿No quieres seguir con tu compra? Si sales, se restablecerán los productos seleccionados.") },
+            text = { Text("¿Estás seguro que quieres cancelar tu compra? Si sales, se restablecerán los productos seleccionados.") },
             confirmButton = {
                 Button(
                     onClick = {
                         showExitDialog = false
-                        carritoViewModel.clearCart()
-                        navController.navigate("home") { popUpTo("home") { inclusive = true } }
+                        carritoViewModel.clearCart()  // Limpiar el carrito si acepta cancelar la compra
+                        navController.popBackStack("home", inclusive = true)  // Regresar a la pantalla de inicio
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
                 ) {
@@ -207,6 +208,8 @@ fun CarritoScreenOnly(
         )
     }
 }
+
+
 
 
 

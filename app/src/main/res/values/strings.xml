@@ -3,4 +3,6 @@
     <string name="title_activity_carrito">CarritoActivity</string>
     <string name="title_activity_payment">PaymentActivity</string>
     <string name="title_activity_purchase_summary">PurchaseSummaryActivity</string>
+    <string name="title_activity_suggestion">SuggestionActivity</string>
+    <string name="title_activity_reservar_comida">ReservarComidaActivity</string>
 </resources>

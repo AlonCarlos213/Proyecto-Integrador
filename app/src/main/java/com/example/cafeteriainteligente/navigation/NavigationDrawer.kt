@@ -24,7 +24,6 @@ fun NavigationDrawer(
         modifier = Modifier
             .fillMaxHeight()
     ) {
-        // Agrega un `Spacer` para empujar todo hacia abajo
         Spacer(modifier = Modifier.height(40.dp)) // Espacio en la parte superior
 
         // Sección superior en verde con el perfil de usuario
@@ -70,11 +69,12 @@ fun NavigationDrawer(
                 }
             }
         }
+
         // Sección inferior con fondo blanco para las opciones
         Column(
             modifier = Modifier
-                .background(Color.White) // Fondo blanco
-                .fillMaxHeight()  // Ocupa el resto del espacio disponible
+                .background(Color.White)
+                .fillMaxHeight()
                 .padding(8.dp)
         ) {
             DrawerItem(icon = Icons.Default.Home, label = "Inicio") {
@@ -97,6 +97,10 @@ fun NavigationDrawer(
             }
             DrawerItem(icon = Icons.Default.CardGiftcard, label = "Cupones") {
                 onDestinationClicked("cupones")
+            }
+            // Nueva opción añadida para "Reservar comida con anticipación"
+            DrawerItem(icon = painterResource(id = R.drawable.ic_food_fork_drink), label = "Reservar comida con anticipación") {
+                onDestinationClicked("reservar_comida")
             }
 
             Spacer(modifier = Modifier.weight(1f)) // Empuja la siguiente sección hacia abajo
@@ -130,7 +134,10 @@ fun DrawerItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(vertical = 8.dp, horizontal = 16.dp)  // Aumenta el padding para más espacio
+            .padding(
+                vertical = 8.dp,
+                horizontal = 16.dp
+            )
     ) {
         Icon(imageVector = icon, contentDescription = label, tint = Color.Black)
         Spacer(modifier = Modifier.width(16.dp))
@@ -157,4 +164,3 @@ fun DrawerItem(
         Text(text = label, color = Color.Black)
     }
 }
-

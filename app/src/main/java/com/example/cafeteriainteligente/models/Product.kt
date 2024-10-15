@@ -10,4 +10,5 @@ data class Product(
     val name: String,
     val price: Double,  // Cambia el tipo a Double o Float
     val points: Int,
+    var quantity: Int = 1
 ) : Parcelable
