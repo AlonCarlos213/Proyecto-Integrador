@@ -42,13 +42,22 @@ fun CarritoScreenOnly(
         products.forEach { product -> this[product] = 1 }
     }}
     var updatedProducts by remember { mutableStateOf(products) }
+    var showExitDialog by remember { mutableStateOf(false) } // Control para mostrar el diálogo
+    var inCheckoutProcess by remember { mutableStateOf(false) } // Controla si está en proceso de pago
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Carrito de Compras") },
                 navigationIcon = {
-                    IconButton(onClick = { onBackPressed() }) {
+                    IconButton(onClick = {
+                        // Solo mostrar el diálogo si ya está en proceso de compra (presionó "Comprar ahora")
+                        if (inCheckoutProcess) {
+                            showExitDialog = true
+                        } else {
+                            onBackPressed() // No mostrar advertencia, simplemente navegar
+                        }
+                    }) {
                         Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Regresar")
                     }
                 }
@@ -157,6 +166,7 @@ fun CarritoScreenOnly(
                             val intent = Intent(context, PaymentActivity::class.java)
                             intent.putExtra("selectedProducts", productsJson)
                             context.startActivity(intent)
+                            inCheckoutProcess = true // Marcar que ha comenzado el proceso de compra
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
                         modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -167,7 +177,40 @@ fun CarritoScreenOnly(
             }
         }
     )
+
+    // Diálogo de advertencia solo si está en proceso de compra
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },  // Cierra el diálogo si se hace clic fuera
+            title = { Text(text = "Cancelar compra") },
+            text = { Text("¿No quieres seguir con tu compra? Si sales, se restablecerán los productos seleccionados.") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showExitDialog = false
+                        carritoViewModel.clearCart()
+                        navController.navigate("home") { popUpTo("home") { inclusive = true } }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                ) {
+                    Text("Aceptar")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { showExitDialog = false },  // Mantiene al usuario en la pantalla
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Gray)
+                ) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 }
+
+
+
+
 
 
 

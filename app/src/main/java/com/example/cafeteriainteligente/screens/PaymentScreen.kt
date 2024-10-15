@@ -20,10 +20,11 @@ import com.example.cafeteriainteligente.models.Product
 fun PaymentScreen(
     navController: NavController,
     carritoViewModel: CarritoViewModel,
-    selectedProducts: List<Product>,  // Recibir los productos seleccionados
+    selectedProducts: List<Product>,
     onPaymentSuccess: () -> Unit
 ) {
     var termsAccepted by remember { mutableStateOf(false) }
+    var showDialog by remember { mutableStateOf(false) } // Controlar si se muestra el cuadro de diálogo
     val buttonColor = if (termsAccepted) Color(0xFF4CAF50) else Color.Gray
     val totalAmount = if (selectedProducts.isNotEmpty()) {
         selectedProducts.sumOf { it.price }
@@ -42,10 +43,7 @@ fun PaymentScreen(
                 title = { Text("Realizar Pago") },
                 navigationIcon = {
                     IconButton(onClick = {
-                        // La flecha simplemente redirige a la pantalla del carrito
-                        navController.navigate("carrito") {
-                            popUpTo("carrito") { inclusive = true }
-                        }
+                        showDialog = true // Mostrar el diálogo cuando se presiona la flecha
                     }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Volver al carrito")
                     }
@@ -111,24 +109,40 @@ fun PaymentScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Botón rojo para "Cancelar compra"
-                Button(
-                    onClick = {
-                        carritoViewModel.clearCart()  // Limpiar el carrito
-                        println("Carrito limpiado, navegando a home")  // Log para ver si se ejecuta esta línea
-                        try {
-                            navController.navigate("home") {
-                                popUpTo("home") { inclusive = true }  // Volver a la pantalla principal
+                // Cuadro de diálogo para confirmar la cancelación
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            showDialog = false // Cerrar el diálogo cuando se toca fuera de él
+                        },
+                        title = { Text(text = "Cancelar compra") },
+                        text = { Text(text = "¿Estás seguro que quieres cancelar tu compra?") },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    carritoViewModel.clearCart()
+                                    navController.navigate("carrito") {
+                                        popUpTo("carrito") { inclusive = true }
+                                    }
+                                    showDialog = false // Cerrar el cuadro de diálogo
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+                            ) {
+                                Text("Aceptar", color = Color.White)
                             }
-                        } catch (e: Exception) {
-                            println("Error al cancelar la compra: ${e.message}")
+                        },
+                        dismissButton = {
+                            Button(
+                                onClick = {
+                                    showDialog = false // Cerrar el cuadro de diálogo sin hacer nada
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+                            ) {
+                                Text("Cancelar", color = Color.Black)
+                            }
                         }
-                    },
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Red)  // Botón rojo
-                ) {
-                    Text("Cancelar compra")
+                    )
                 }
-
             }
         }
     )
