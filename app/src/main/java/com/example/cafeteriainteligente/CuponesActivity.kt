@@ -4,13 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.cafeteriainteligente.screens.ReservarComidaScreen
+import com.example.cafeteriainteligente.screens.CuponesScreen
 
-class ReservarComidaActivity : ComponentActivity() {
+class CuponesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ReservarComidaScreen(
+            CuponesScreen(
                 onNavigateToHome = { navigateToHome() }
             )
         }
@@ -22,5 +22,3 @@ class ReservarComidaActivity : ComponentActivity() {
         finish()
     }
 }
-
-

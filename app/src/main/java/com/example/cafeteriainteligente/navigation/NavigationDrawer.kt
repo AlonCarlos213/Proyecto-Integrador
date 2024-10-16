@@ -1,5 +1,6 @@
 package com.example.cafeteriainteligente.navigation
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,14 +13,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.cafeteriainteligente.CuponesActivity
 import com.example.cafeteriainteligente.R
+import com.example.cafeteriainteligente.ReservarComidaActivity
 
 @Composable
 fun NavigationDrawer(
     onDestinationClicked: (route: String) -> Unit
 ) {
+    // Obtenemos el contexto de la composición
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -95,12 +102,15 @@ fun NavigationDrawer(
             DrawerItem(icon = Icons.Default.LocalOffer, label = "Ofertas") {
                 onDestinationClicked("ofertas")
             }
+            // Nueva opción añadida para "Cupones"
             DrawerItem(icon = Icons.Default.CardGiftcard, label = "Cupones") {
-                onDestinationClicked("cupones")
+                val intent = Intent(context, CuponesActivity::class.java)
+                context.startActivity(intent)
             }
-            // Nueva opción añadida para "Reservar comida con anticipación"
-            DrawerItem(icon = painterResource(id = R.drawable.ic_food_fork_drink), label = "Reservar comida con anticipación") {
-                onDestinationClicked("reservar_comida")
+            // Nueva opción añadida para "Sugerir plato"
+            DrawerItem(icon = painterResource(id = R.drawable.ic_food_fork_drink), label = "Sugerir plato") {
+                val intent = Intent(context, ReservarComidaActivity::class.java)
+                context.startActivity(intent)
             }
 
             Spacer(modifier = Modifier.weight(1f)) // Empuja la siguiente sección hacia abajo
@@ -134,10 +144,7 @@ fun DrawerItem(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(
-                vertical = 8.dp,
-                horizontal = 16.dp
-            )
+            .padding(vertical = 8.dp, horizontal = 16.dp)
     ) {
         Icon(imageVector = icon, contentDescription = label, tint = Color.Black)
         Spacer(modifier = Modifier.width(16.dp))
@@ -163,4 +170,5 @@ fun DrawerItem(
         Spacer(modifier = Modifier.width(16.dp))
         Text(text = label, color = Color.Black)
     }
+
 }
