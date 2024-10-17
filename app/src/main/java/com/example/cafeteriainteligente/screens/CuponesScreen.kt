@@ -1,8 +1,8 @@
 package com.example.cafeteriainteligente.screens
 
-import com.example.cafeteriainteligente.screens.IngresarCodigoCuponDialog
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -10,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.cafeteriainteligente.R
+import com.example.cafeteriainteligente.data.getCuponesList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -20,6 +22,7 @@ fun CuponesScreen(onNavigateToHome: () -> Unit) {
     val scope = rememberCoroutineScope()
     var showCupones by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+    var selectedCuponDetails by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
@@ -61,9 +64,13 @@ fun CuponesScreen(onNavigateToHome: () -> Unit) {
                 Button(
                     onClick = {
                         scope.launch {
-                            delay(1000) // Simula un pequeño delay
-                            showCupones = true
-                            snackbarHostState.showSnackbar("Cupones cargados correctamente")
+                            try {
+                                delay(1000)
+                                showCupones = true
+                                snackbarHostState.showSnackbar("Cupones cargados correctamente")
+                            } catch (e: Exception) {
+                                snackbarHostState.showSnackbar("Error al cargar los cupones")
+                            }
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
@@ -73,14 +80,25 @@ fun CuponesScreen(onNavigateToHome: () -> Unit) {
                 }
             } else {
                 LazyColumn {
-                    items(5) { index ->
+                    items(getCuponesList()) { cupon ->
                         CuponItem(
-                            title = "S/ ${index * 100} OFF en Producto ${index + 1}",
-                            description = "Compra mínima S/ ${index * 1000}",
+                            title = cupon.title,
+                            description = cupon.description,
+                            imageResId = when (cupon.title) {
+                                "S/ 5 OFF en Café Americano" -> R.drawable.menu2
+                                "2x1 en Capuchino" -> R.drawable.menu3
+                                "15% de descuento en Sandwiches" -> R.drawable.menu4
+                                "S/ 3 OFF en Muffins" -> R.drawable.menu5
+                                "10% de descuento en Menú del Día" -> R.drawable.menu1
+                                else -> R.drawable.ic_coupon // Imagen por defecto si no hay coincidencia
+                            },
                             onApplyClick = {
                                 scope.launch {
                                     snackbarHostState.showSnackbar("Cupón aplicado correctamente")
                                 }
+                            },
+                            onInfoClick = {
+                                selectedCuponDetails = cupon.details
                             }
                         )
                     }
@@ -97,35 +115,17 @@ fun CuponesScreen(onNavigateToHome: () -> Unit) {
                     }
                 )
             }
-        }
-    }
-}
 
-@Composable
-fun CuponItem(title: String, description: String, onApplyClick: () -> Unit) {
-    var isApplied by remember { mutableStateOf(false) }
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = title, style = MaterialTheme.typography.titleMedium)
-            Text(text = description, style = MaterialTheme.typography.bodySmall)
-            Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                onClick = {
-                    isApplied = !isApplied
-                    onApplyClick()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isApplied) Color.Gray else Color(0xFF4CAF50)
+            selectedCuponDetails?.let { details ->
+                CuponDetailsDialog(
+                    details = details,
+                    onDismiss = { selectedCuponDetails = null }
                 )
-            ) {
-                Text(text = if (isApplied) "Buscar Productos" else "Aplicar", color = Color.White)
             }
         }
     }
 }
+
+
+
 

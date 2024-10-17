@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.cafeteriainteligente.CuponesActivity
+import com.example.cafeteriainteligente.OfertasActivity
 import com.example.cafeteriainteligente.R
 import com.example.cafeteriainteligente.ReservarComidaActivity
 
@@ -100,7 +101,8 @@ fun NavigationDrawer(
                 onDestinationClicked("favoritos")
             }
             DrawerItem(icon = Icons.Default.LocalOffer, label = "Ofertas") {
-                onDestinationClicked("ofertas")
+                val intent = Intent(context, OfertasActivity::class.java)
+                context.startActivity(intent)
             }
             // Nueva opción añadida para "Cupones"
             DrawerItem(icon = Icons.Default.CardGiftcard, label = "Cupones") {

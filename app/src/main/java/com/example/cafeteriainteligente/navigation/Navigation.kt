@@ -40,7 +40,13 @@ fun AppNavigation(
         composable(route = "compras") { MisComprasScreen() }
         composable(route = "notificaciones") { NotificacionesScreen() }
         composable(route = "favoritos") { FavoritosScreen() }
-        composable(route = "ofertas") { OfertasScreen() }
+        composable(route = "ofertas") {
+            OfertasScreen(
+                onNavigateToHome = {
+                    navController.navigate("home")
+                }
+            )
+        }
         composable(route = "cupones") {
             CuponesScreen(onNavigateToHome = {
                 navController.navigate("home") {
