@@ -7,4 +7,5 @@
     <string name="title_activity_reservar_comida">ReservarComidaActivity</string>
     <string name="title_activity_cupones">CuponesActivity</string>
     <string name="title_activity_ofertas">OfertasActivity</string>
+    <string name="title_activity_ajustes">AjustesActivity</string>
 </resources>

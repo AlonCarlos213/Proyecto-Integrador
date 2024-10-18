@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CuponesScreen(onNavigateToHome: () -> Unit) {
+fun CuponesScreen(onNavigateBack: () -> Unit) {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var showCupones by remember { mutableStateOf(false) }
@@ -29,7 +29,7 @@ fun CuponesScreen(onNavigateToHome: () -> Unit) {
             TopAppBar(
                 title = { Text("Cupones") },
                 navigationIcon = {
-                    IconButton(onClick = { onNavigateToHome() }) {
+                    IconButton(onClick = { onNavigateBack() }) {  // Usa onNavigateBack para volver atrás
                         Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
@@ -90,7 +90,7 @@ fun CuponesScreen(onNavigateToHome: () -> Unit) {
                                 "15% de descuento en Sandwiches" -> R.drawable.menu4
                                 "S/ 3 OFF en Muffins" -> R.drawable.menu5
                                 "10% de descuento en Menú del Día" -> R.drawable.menu1
-                                else -> R.drawable.ic_coupon // Imagen por defecto si no hay coincidencia
+                                else -> R.drawable.ic_coupon
                             },
                             onApplyClick = {
                                 scope.launch {
@@ -125,6 +125,8 @@ fun CuponesScreen(onNavigateToHome: () -> Unit) {
         }
     }
 }
+
+
 
 
 

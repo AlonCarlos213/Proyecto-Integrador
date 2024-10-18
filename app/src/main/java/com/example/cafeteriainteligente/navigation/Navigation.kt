@@ -48,15 +48,16 @@ fun AppNavigation(
             )
         }
         composable(route = "cupones") {
-            CuponesScreen(onNavigateToHome = {
-                navController.navigate("home") {
-                    popUpTo("cupones") { inclusive = true }
-                }
+            CuponesScreen(onNavigateBack = {
+                navController.popBackStack()  // Esto permite volver a la pantalla anterior sin reiniciar la app
             })
         }
-
         composable(route = "mi_cuenta") { MiCuentaScreen() }
-        composable(route = "ajustes") { SettingsScreen() }
+        composable(route = "ajustes") {
+            AjustesScreen(onNavigateToHome = {
+                navController.navigate("home")
+            })
+        }
         composable(route = "carrito") {
             CarritoScreenOnly(
                 products = carritoViewModel.productosEnCarrito,
@@ -103,11 +104,10 @@ fun AppNavigation(
                 carritoViewModel = carritoViewModel // Asegúrate de pasar este parámetro
             )
         }
-
         // Nueva ruta para la pantalla de Reservar comida
         composable(route = "sugerir_plato") {
             ReservarComidaScreen(
-                onNavigateToHome = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() }  // Usa popBackStack para retroceder
             )
         }
     }

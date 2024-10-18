@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
 @Composable
-fun ReservarComidaScreen(onNavigateToHome: () -> Unit) {
+fun ReservarComidaScreen(onNavigateBack: () -> Unit) {  // Cambia a onNavigateBack
     var selectedCategory by remember { mutableStateOf("Café") }
     var suggestedProduct by remember { mutableStateOf(TextFieldValue("")) }
     val snackbarHostState = remember { SnackbarHostState() }
@@ -29,7 +29,7 @@ fun ReservarComidaScreen(onNavigateToHome: () -> Unit) {
                 backgroundColor = Color(0xFF4CAF50),
                 contentColor = Color.White,
                 navigationIcon = {
-                    IconButton(onClick = { onNavigateToHome() }) {
+                    IconButton(onClick = { onNavigateBack() }) {  // Llama a onNavigateBack en lugar de navegar a Home
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
@@ -70,7 +70,7 @@ fun ReservarComidaScreen(onNavigateToHome: () -> Unit) {
                     }
                     scope.launch {
                         kotlinx.coroutines.delay(1000)
-                        onNavigateToHome()
+                        onNavigateBack()  // Llama onNavigateBack después de enviar la sugerencia
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),

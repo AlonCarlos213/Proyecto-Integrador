@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.cafeteriainteligente.AjustesActivity
 import com.example.cafeteriainteligente.CuponesActivity
 import com.example.cafeteriainteligente.OfertasActivity
 import com.example.cafeteriainteligente.R
@@ -31,6 +32,7 @@ fun NavigationDrawer(
     Column(
         modifier = Modifier
             .fillMaxHeight()
+            .background(Color(0xFF4CAF50))
     ) {
         Spacer(modifier = Modifier.height(40.dp)) // Espacio en la parte superior
 
@@ -126,8 +128,10 @@ fun NavigationDrawer(
                 DrawerItem(icon = painterResource(id = R.drawable.ic_account), label = "Mi cuenta") {
                     onDestinationClicked("mi_cuenta")
                 }
+                // Nueva opción añadida para "Ajustes"
                 DrawerItem(icon = painterResource(id = R.drawable.ic_settings), label = "Ajustes") {
-                    onDestinationClicked("ajustes")
+                    val intent = Intent(context, AjustesActivity::class.java)
+                    context.startActivity(intent)
                 }
             }
         }
@@ -172,5 +176,4 @@ fun DrawerItem(
         Spacer(modifier = Modifier.width(16.dp))
         Text(text = label, color = Color.Black)
     }
-
 }
