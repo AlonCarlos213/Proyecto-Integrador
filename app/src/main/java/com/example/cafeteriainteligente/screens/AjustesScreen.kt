@@ -22,13 +22,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.cafeteriainteligente.ui.theme.Jade500
 import com.example.cafeteriainteligente.ui.theme.Jade600
 import com.example.cafeteriainteligente.ui.theme.Typography
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AjustesScreen(onNavigateToHome: () -> Unit) {
+fun AjustesScreen(navController: NavController, onNavigateToHome: () -> Unit) {
+    val auth =FirebaseAuth.getInstance()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -81,8 +84,18 @@ fun AjustesScreen(onNavigateToHome: () -> Unit) {
 
             // Opciones legales y de cuenta
             AjusteItem(title = "Términos y políticas legales", icon = Icons.Filled.Description)
-            AjusteItem(title = "Cambiar cuenta", icon = Icons.Filled.AccountBox)
-            AjusteItem(title = "Cerrar sesión", icon = Icons.Filled.Logout)
+
+            AjusteItem(title = "Cambiar cuenta", icon = Icons.Filled.AccountBox) {
+                auth.signOut() // Cerrar la sesión actual
+                navController?.navigate("login")
+                    ?: onNavigateToHome()  // Redirigir a login o volver a la actividad anterior
+            }
+
+            AjusteItem(title = "Cerrar sesión", icon = Icons.Filled.Logout) {
+                auth.signOut()
+                navController?.navigate("login")
+                    ?: onNavigateToHome()  // Redirigir a login o volver a la actividad anterior
+            }
         }
     }
 }
@@ -93,6 +106,29 @@ fun AjusteItem(title: String, icon: ImageVector) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { /* Acción al hacer clic */ }
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = title,
+            tint = Jade600,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+            text = title,
+            style = Typography.bodyLarge,
+            color = Color.Black
+        )
+    }
+}
+@Composable
+fun AjusteItem(title: String, icon: ImageVector, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }  // Acción cuando se hace clic
             .padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

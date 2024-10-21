@@ -1,5 +1,7 @@
 package com.example.cafeteriainteligente.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -11,7 +13,7 @@ import com.example.cafeteriainteligente.models.Product
 import com.example.cafeteriainteligente.screens.*
 import com.google.gson.Gson
 
-
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun AppNavigation(
     navController: NavHostController,
@@ -52,11 +54,18 @@ fun AppNavigation(
                 navController.popBackStack()  // Esto permite volver a la pantalla anterior sin reiniciar la app
             })
         }
-        composable(route = "mi_cuenta") { MiCuentaScreen() }
-        composable(route = "ajustes") {
-            AjustesScreen(onNavigateToHome = {
+        composable(route = "mi_cuenta") {
+            MiCuentaScreen(onNavigateToHome = {
                 navController.navigate("home")
             })
+        }
+        composable(route = "ajustes") {
+            AjustesScreen(
+                navController = navController,  // Pasar el navController
+                onNavigateToHome = {
+                    navController.navigate("home")
+                }
+            )
         }
         composable(route = "carrito") {
             CarritoScreenOnly(

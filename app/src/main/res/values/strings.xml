@@ -9,5 +9,6 @@
     <string name="title_activity_ofertas">OfertasActivity</string>
     <string name="title_activity_ajustes">AjustesActivity</string>
     <string name="default_web_client_id">814270001814-hbief0en47kclerlcljjkqvqes8koij2.apps.googleusercontent.com</string>
+    <string name="title_activity_mi_cuenta">MiCuentaActivity</string>
 
 </resources>

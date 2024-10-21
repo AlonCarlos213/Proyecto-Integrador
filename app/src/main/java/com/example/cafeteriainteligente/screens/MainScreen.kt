@@ -1,6 +1,7 @@
 package com.example.cafeteriainteligente.screens
 
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -20,6 +21,7 @@ import com.example.cafeteriainteligente.models.CarritoViewModel
 import androidx.compose.foundation.layout.Box
 import androidx.navigation.compose.rememberNavController
 import com.example.cafeteriainteligente.CarritoActivity
+import com.google.firebase.auth.FirebaseAuth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,9 +32,13 @@ fun MainScreen(navController: NavHostController) {
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
+    // Simulando los valores de usuario
+    val user = FirebaseAuth.getInstance().currentUser
+    val profileImage: Bitmap? = null // Aquí puedes pasar la imagen del perfil desde tu ViewModel o lógica
+    val userName = user?.displayName ?: "Usuario Invitado"
+
     // Obtener el ViewModel del carrito
     val carritoViewModel: CarritoViewModel = viewModel()
-
 
     // Obtener los productos del carrito desde el ViewModel
     val cartProducts by remember { derivedStateOf { carritoViewModel.productosEnCarrito } }
@@ -47,13 +53,16 @@ fun MainScreen(navController: NavHostController) {
                 modifier = Modifier
                     .fillMaxWidth(0.6f)
             ) {
+                // Pasamos los valores correctos a `NavigationDrawer`
                 NavigationDrawer(
                     onDestinationClicked = { route ->
                         navController.navigate(route)
                         coroutineScope.launch {
                             drawerState.close()
                         }
-                    }
+                    },
+                    profileImage = profileImage,  // Pasar la imagen del perfil
+                    userName = userName           // Pasar el nombre del usuario
                 )
             }
         },

@@ -5,14 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.cafeteriainteligente.screens.AjustesScreen
 import com.example.cafeteriainteligente.ui.theme.CafeteriaInteligenteTheme
+import androidx.navigation.compose.rememberNavController
 
 class AjustesActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val navController = rememberNavController()  // Instancia de NavController
+
             CafeteriaInteligenteTheme {
-                AjustesScreen(onNavigateToHome = {
-                    finish() // Termina la actividad y regresa a la anterior (MainActivity)
+                AjustesScreen(navController = navController, onNavigateToHome = {
+                    finish() // Termina la actividad y regresa a la anterior
                 })
             }
         }

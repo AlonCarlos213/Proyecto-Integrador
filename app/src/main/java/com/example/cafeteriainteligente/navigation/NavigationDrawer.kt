@@ -1,6 +1,8 @@
 package com.example.cafeteriainteligente.navigation
 
 import android.content.Intent
+import android.graphics.Bitmap
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,22 +14,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.cafeteriainteligente.AjustesActivity
 import com.example.cafeteriainteligente.CuponesActivity
+import com.example.cafeteriainteligente.MiCuentaActivity
 import com.example.cafeteriainteligente.OfertasActivity
 import com.example.cafeteriainteligente.R
 import com.example.cafeteriainteligente.ReservarComidaActivity
 
 @Composable
 fun NavigationDrawer(
-    onDestinationClicked: (route: String) -> Unit
+    onDestinationClicked: (route: String) -> Unit,
+    profileImage: Bitmap?,  // Imagen de perfil pasada como parámetro
+    userName: String        // Nombre del usuario pasado como parámetro
 ) {
-    // Obtenemos el contexto de la composición
-
     val context = LocalContext.current
 
     Column(
@@ -51,13 +55,20 @@ fun NavigationDrawer(
                     .fillMaxWidth()
                     .padding(8.dp)
             ) {
-                // Icono del perfil
+                // Imagen de perfil o ícono por defecto
                 Box(
                     modifier = Modifier
                         .size(72.dp)
                         .background(Color.LightGray, shape = CircleShape)
                 ) {
-                    Icon(
+                    profileImage?.let {
+                        // Muestra la imagen de perfil si está disponible
+                        Image(
+                            bitmap = it.asImageBitmap(),
+                            contentDescription = "Perfil",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } ?: Icon(
                         imageVector = Icons.Default.AccountCircle,
                         contentDescription = "Perfil",
                         tint = Color.White,
@@ -68,14 +79,19 @@ fun NavigationDrawer(
                 // Nombre del usuario y enlace de perfil
                 Column {
                     Text(
-                        text = "Carlos Alonso",  // Ajusta el nombre del usuario
+                        text = userName,  // Nombre del usuario
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.White
                     )
                     Text(
                         text = "Mi perfil",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.LightGray
+                        color = Color.LightGray,
+                        modifier = Modifier.clickable {
+                            // Navegar a la pantalla de Mi Cuenta
+                            val intent = Intent(context, MiCuentaActivity::class.java)
+                            context.startActivity(intent)
+                        }
                     )
                 }
             }
@@ -107,12 +123,10 @@ fun NavigationDrawer(
                 val intent = Intent(context, OfertasActivity::class.java)
                 context.startActivity(intent)
             }
-            // Nueva opción añadida para "Cupones"
             DrawerItem(icon = Icons.Default.CardGiftcard, label = "Cupones") {
                 val intent = Intent(context, CuponesActivity::class.java)
                 context.startActivity(intent)
             }
-            // Nueva opción añadida para "Sugerir plato"
             DrawerItem(icon = painterResource(id = R.drawable.ic_food_fork_drink), label = "Sugerir plato") {
                 val intent = Intent(context, ReservarComidaActivity::class.java)
                 context.startActivity(intent)
@@ -120,16 +134,16 @@ fun NavigationDrawer(
 
             Spacer(modifier = Modifier.weight(1f)) // Empuja la siguiente sección hacia abajo
 
-            // Opciones adicionales en la parte inferior
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp)
             ) {
                 DrawerItem(icon = painterResource(id = R.drawable.ic_account), label = "Mi cuenta") {
-                    onDestinationClicked("mi_cuenta")
+                    val intent = Intent(context, MiCuentaActivity::class.java)
+                    context.startActivity(intent)
                 }
-                // Nueva opción añadida para "Ajustes"
+
                 DrawerItem(icon = painterResource(id = R.drawable.ic_settings), label = "Ajustes") {
                     val intent = Intent(context, AjustesActivity::class.java)
                     context.startActivity(intent)
