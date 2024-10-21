@@ -4,6 +4,7 @@ buildscript {
     dependencies {
         // Asegúrate de usar la versión 8.5.1 del Android Gradle Plugin
         classpath("com.android.tools.build:gradle:8.5.1")
+        classpath("com.google.gms:google-services:4.3.15")
     }
 }
 

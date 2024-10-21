@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -81,7 +82,8 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.5.1")
     implementation("androidx.compose.foundation:foundation:1.5.1")
     implementation("androidx.compose.material3:material3:1.0.1")
-
+    implementation("com.google.firebase:firebase-auth-ktx:21.0.1")
+    implementation("com.google.android.gms:play-services-auth:20.1.0")
     implementation("com.google.accompanist:accompanist-pager:0.30.0")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.30.0")
     implementation("androidx.compose.runtime:runtime:1.5.1")

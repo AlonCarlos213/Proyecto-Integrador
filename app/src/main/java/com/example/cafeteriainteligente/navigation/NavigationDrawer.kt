@@ -27,6 +27,7 @@ fun NavigationDrawer(
     onDestinationClicked: (route: String) -> Unit
 ) {
     // Obtenemos el contexto de la composición
+
     val context = LocalContext.current
 
     Column(
