@@ -81,6 +81,16 @@ fun LoginScreen(navController: NavController) {
             Button(onClick = { launcher.launch(googleSignInClient.signInIntent) }) {
                 Text("Iniciar Sesión con Google")
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón de ingresar como invitado
+            Button(onClick = {
+                // Navegar a la pantalla principal sin autenticación
+                navController.navigate("home")
+            }) {
+                Text("Ingresar como Invitado")
+            }
         }
     }
 }
@@ -97,5 +107,6 @@ private fun firebaseAuthWithGoogle(idToken: String, auth: FirebaseAuth, navContr
                 task.exception?.printStackTrace()
             }
         }
-    }
+}
+
 
