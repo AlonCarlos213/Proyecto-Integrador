@@ -84,17 +84,26 @@ fun AjustesScreen(navController: NavController, onNavigateToHome: () -> Unit) {
 
             // Opciones legales y de cuenta
             AjusteItem(title = "Términos y políticas legales", icon = Icons.Filled.Description)
-
             AjusteItem(title = "Cambiar cuenta", icon = Icons.Filled.AccountBox) {
                 auth.signOut() // Cerrar la sesión actual
-                navController?.navigate("login")
-                    ?: onNavigateToHome()  // Redirigir a login o volver a la actividad anterior
+                try {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }  // Limpia la pila de navegación
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()  // Manejo de la excepción si ocurre un error
+                }
             }
 
             AjusteItem(title = "Cerrar sesión", icon = Icons.Filled.Logout) {
-                auth.signOut()
-                navController?.navigate("login")
-                    ?: onNavigateToHome()  // Redirigir a login o volver a la actividad anterior
+                auth.signOut() // Cerrar la sesión actual
+                try {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }  // Limpia la pila de navegación
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()  // Manejo de la excepción si ocurre un error
+                }
             }
         }
     }
