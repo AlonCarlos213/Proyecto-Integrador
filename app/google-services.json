@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "814270001814",
+    "project_id": "proyecto-integrador-29588",
+    "storage_bucket": "proyecto-integrador-29588.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:814270001814:android:837cf992f900bd23f288b7",
+        "android_client_info": {
+          "package_name": "com.example.cafeteriainteligente"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "814270001814-48c9ps14qqffp9fhkr7jmtfkk7ri4pv2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cafeteriainteligente",
+            "certificate_hash": "50e2e99918f5e4e1db5d840058543e0bd8d2b37f"
+          }
+        },
+        {
+          "client_id": "814270001814-hbief0en47kclerlcljjkqvqes8koij2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAmsUuj37J7dXrjpgp74WyfpVB_zQjo6Fc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "814270001814-hbief0en47kclerlcljjkqvqes8koij2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
